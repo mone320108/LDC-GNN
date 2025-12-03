@@ -82,8 +82,18 @@ def train(args):
     # ------------------------------------------------------------
     # Final test
     # ------------------------------------------------------------
-    print("Loading best checkpoint...")
-    model.load_state_dict(torch.load("mdgrec_best.pt", map_location=device))
+    import os # 确保开头 import os
+
+    print("Training finished. Evaluating...")
+    
+    # 检查是否存在最佳模型文件
+    if os.path.exists("mdgrec_best.pt"):
+        print("Loading best checkpoint from disk...")
+        model.load_state_dict(torch.load("mdgrec_best.pt", map_location=device))
+    else:
+        print("⚠️ Warning: 'mdgrec_best.pt' not found. Using the model from the last epoch.")
+    
+    # 进行最终测试
     test_metrics = evaluate_full(model, data, device=device, topk=(10,20))
     print("Test metrics:", test_metrics)
 
